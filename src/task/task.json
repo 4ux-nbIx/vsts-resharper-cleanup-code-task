@@ -1,0 +1,106 @@
+﻿{
+    "id": "17136604-ba97-48ef-94a4-cfb5d15cac84",
+    "name": "resharper-cleanup-code",
+    "friendlyName": "Resharper Code Cleanup",
+    "description": "Runs the Resharper Command-Line Tool to cleanup code",
+    "helpMarkDown": "[More Information](https://www.jetbrains.com/resharper/features/command-line.html)",
+    "category": "Build",
+    "visibility": [
+        "Build"
+    ],
+    "author": "Roman Novitsky",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 6
+    },
+    "demands": [
+    ],
+    "minimumAgentVersion": "1.83.0",
+        "groups": [
+        {
+            "name": "configurationOptions",
+            "displayName": "Configuration",
+            "isExpanded": true
+        },
+        {
+            "name": "advancedOptions",
+            "displayName": "Advanced Options",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "SolutionOrProjectPath",
+            "type": "filePath",
+            "label": "Path to .sln or .csproj file",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The path to find the solution or project file for code cleanup.",
+            "groupName":  "configurationOptions"
+        },
+        {
+            "name": "CommandLineInterfacePath",
+            "type": "filePath",
+            "label": "Path to command line tool",
+            "defaultValue": "$(Build.SourcesDirectory)/Lib/Resharper",
+            "required": false,
+            "helpMarkDown": "Use this setting to avoid downloading the CLT from NuGet and take it from a pre-set folder. The path can be inside the repository or a known location on the build agent (custom controller only). cleanupcode.exe must be available in this folder.",
+            "groupName":  "advancedOptions"
+        },
+        {
+            "name": "AdditionalArguments",
+            "type": "string",
+            "label": "Additional arguments",
+            "defaultValue": "--disable-settings-layers=SolutionPersonal",
+            "required": false,
+            "helpMarkDown": "Customize the additional arguments provided to the CLT as specified by the CLT documentation.",
+            "groupName":  "advancedOptions"
+        },
+		{
+            "name": "ResharperNuGetVersion",
+            "type": "string",
+            "label": "Resharper NuGet version",
+            "defaultValue": "Latest",
+            "required": false,
+            "helpMarkDown": "Allows to install and use an older version of the NuGet package found at https://www.nuget.org/packages/JetBrains.ReSharper.CommandLineTools e.g. 2016.1.20160504.105828",
+            "groupName":  "advancedOptions"
+        },
+		{
+            "name": "ResultsOutputFilePath",
+            "type": "string",
+            "label": "Results output file path",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Allows the default xml results file output location to be overridden e.g. $(Build.ArtifactStagingDirectory)\\CodeQualityResults.xml. Results file is not deleted afterwards",
+            "groupName":  "advancedOptions"
+        },
+        {
+            "name": "OnlyCleanUpSpecifiedFiles",
+            "type": "boolean",
+            "label": "Only cleanup the specified files",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Limit the scope of code cleanup to the specified list of files.",
+            "groupName":  "advancedOptions"
+        },
+        {
+            "name": "FilesToCleanUp",
+            "type": "string",
+            "label": "Files to clean up",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Semicolon-separated list of files to clean up.",
+            "groupName":  "advancedOptions",
+            "visibleRule": "OnlyCleanUpSpecifiedFiles = true"
+        }
+    ],
+    "instanceNameFormat": "Automated code cleanup",
+    "execution": {
+        "PowerShell": {
+            "target": "$(currentDirectory)\\RunResharperCodeCleanupTool.ps1",
+            "argumentFormat": "-commandLineInterfacePath $(CommandLineInterfacePath) -solutionOrProjectPath \"$(SolutionOrProjectPath)\" -additionalArguments $(AdditionalArguments) -buildId $(Build.BuildId) -resultsPathOverride $(ResultsOutputFilePath) -resharperNugetVersion $(ResharperNuGetVersion) -onlyCleanUpSpecifiedFiles $(OnlyCleanUpSpecifiedFiles) -filesToCleanUp \"$(FilesToCleanUp)\"",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}
