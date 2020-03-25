@@ -12,11 +12,11 @@
     "version": {
         "Major": 1,
         "Minor": 0,
-        "Patch": 12
+        "Patch": 17
     },
     "demands": [
     ],
-    "minimumAgentVersion": "1.83.0",
+    "minimumAgentVersion": "1.95.0",
         "groups": [
         {
             "name": "configurationOptions",
@@ -97,10 +97,12 @@
     ],
     "instanceNameFormat": "Automated code cleanup",
     "execution": {
-        "PowerShell": {
+        "PowerShell3": {
             "target": "$(currentDirectory)\\RunResharperCodeCleanupTool.ps1",
-            "argumentFormat": "-commandLineInterfacePath $(CommandLineInterfacePath) -solutionOrProjectPath \"$(SolutionOrProjectPath)\" -additionalArguments \"$(AdditionalArguments)\" -buildId $(Build.BuildId) -resultsPathOverride $(ResultsOutputFilePath) -resharperNugetVersion $(ResharperNuGetVersion) -onlyCleanUpSpecifiedFiles $(OnlyCleanUpSpecifiedFiles) -filesToCleanUp \"$(FilesToCleanUp)\"",
-            "workingDirectory": "$(currentDirectory)"
+            "workingDirectory": "$(currentDirectory)",
+            "platforms": [
+                "windows"
+            ]
         }
     }
 }
