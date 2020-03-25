@@ -2,7 +2,7 @@
     "manifestVersion": 1,
     "id": "resharper-cleanup-code",
     "name": "Resharper Cleanup Code",
-    "version": "1.0.6",
+    "version": "1.0.10",
     "publisher": "RomanNovitsky",
 	"public": false,
     "targets": [

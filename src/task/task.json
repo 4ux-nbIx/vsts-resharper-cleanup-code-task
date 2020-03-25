@@ -12,7 +12,7 @@
     "version": {
         "Major": 1,
         "Minor": 0,
-        "Patch": 6
+        "Patch": 10
     },
     "demands": [
     ],
@@ -99,7 +99,7 @@
     "execution": {
         "PowerShell": {
             "target": "$(currentDirectory)\\RunResharperCodeCleanupTool.ps1",
-            "argumentFormat": "-commandLineInterfacePath $(CommandLineInterfacePath) -solutionOrProjectPath \"$(SolutionOrProjectPath)\" -additionalArguments $(AdditionalArguments) -buildId $(Build.BuildId) -resultsPathOverride $(ResultsOutputFilePath) -resharperNugetVersion $(ResharperNuGetVersion) -onlyCleanUpSpecifiedFiles $(OnlyCleanUpSpecifiedFiles) -filesToCleanUp \"$(FilesToCleanUp)\"",
+            "argumentFormat": "-commandLineInterfacePath $(CommandLineInterfacePath) -solutionOrProjectPath \"$(SolutionOrProjectPath)\" -additionalArguments \"$(AdditionalArguments)\" -buildId $(Build.BuildId) -resultsPathOverride $(ResultsOutputFilePath) -resharperNugetVersion $(ResharperNuGetVersion) -onlyCleanUpSpecifiedFiles $(OnlyCleanUpSpecifiedFiles) -filesToCleanUp \"$(FilesToCleanUp)\"",
             "workingDirectory": "$(currentDirectory)"
         }
     }

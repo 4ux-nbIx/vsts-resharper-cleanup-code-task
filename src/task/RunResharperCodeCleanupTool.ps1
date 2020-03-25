@@ -30,6 +30,7 @@ Write-Output -InputObject "Cleaning up code for $solutionOrProjectPath"
 
 # Run code cleanup
 $filesToCleanUp = $filesToCleanUp.Trim().Trim('"').Trim()
+$additionalArguments = $additionalArguments.Trim().Trim('"').Trim()
 $runCleanup = $true
 
 if ($onlyCleanUpSpecifiedFiles -eq 'true' -and [string]::IsNullOrWhitespace($filesToCleanUp))
@@ -116,6 +117,22 @@ if ($runCleanup)
     $arguments = ''
     if ($onlyCleanUpSpecifiedFiles -eq 'true')
     {
+        $solutionDirectory = [IO.Path]::GetDirectoryName($solutionOrProjectFullPath) + '\';
+
+        $relativeFiles = $filesToCleanUp.Split(';', [StringSplitOptions]::RemoveEmptyEntries) | 
+            ForEach-Object {
+                $absolutePath = [IO.Path]::Combine($env:BUILD_SOURCESDIRECTORY, $_);
+            
+                [Uri] $absoluteUri = New-Object -TypeName System.Uri -ArgumentList ($absolutePath);
+                [Uri] $solutionDirectoryUri = New-Object -TypeName System.Uri -ArgumentList ($solutionDirectory);
+            
+                [Uri] $relativeUri = $solutionDirectoryUri.MakeRelativeUri($absoluteUri);
+            
+                return $relativeUri.ToString();
+            };
+        
+        $filesToCleanUp = [string]::Join(';', $relativeFiles);
+
         $arguments = $arguments + "--include=""$filesToCleanUp"""
     }
     
