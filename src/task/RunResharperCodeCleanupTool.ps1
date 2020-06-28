@@ -108,20 +108,6 @@ try {
             Throw [IO.FileNotFoundException] "No solution or project found at $solutionOrProjectFullPath"
         }
       
-        $targetSolutionOrProjectFullPath = $solutionOrProjectFullPath;
-      
-        $solutionExtension = [IO.Path]::GetExtension($solutionOrProjectFullPath);
-        if ($solutionExtension -eq '.slnf') {
-            $slnf = Get-Content $solutionOrProjectFullPath -Raw | ConvertFrom-Json;
-
-            $slnfDirectory = [IO.Path]::GetDirectoryName($solutionOrProjectFullPath);
-            $targetSolutionOrProjectFullPath = [IO.Path]::Combine($slnfDirectory, $slnf.solution.path);
-        }
-      
-        if (!(Test-Path -Path $targetSolutionOrProjectFullPath)) 
-        {
-            Throw [IO.FileNotFoundException] "No solution or project found at $targetSolutionOrProjectFullPath"
-        }
       
         [string] $resultsPath = [IO.Path]::GetFullPath([IO.Path]::Combine($commandLineInterfacePath, "Reports\CodeCleanupResults_$buildId.xml"))
         if ($resultsPathOverride)
@@ -139,7 +125,7 @@ try {
         $arguments = ''
         if ($onlyCleanUpSpecifiedFiles -eq 'true')
         {
-            $solutionDirectory = [IO.Path]::GetDirectoryName($targetSolutionOrProjectFullPath) + '\';
+            $solutionDirectory = [IO.Path]::GetDirectoryName($solutionOrProjectFullPath) + '\';
         
             $relativeFiles = $filesToCleanUp.Split(';', [StringSplitOptions]::RemoveEmptyEntries) | 
                 ForEach-Object {
@@ -158,7 +144,7 @@ try {
             $arguments = $arguments + "--include=""$filesToCleanUp"""
         }
 
-        $arguments = $arguments + "-o=""$resultsPath"" $additionalArguments ""$solutionOrProjectFullPath"""
+        $arguments = $arguments + " -o=""$resultsPath"" $additionalArguments ""$solutionOrProjectFullPath"""
         Write-Output -InputObject "Invoking CleanupCode.exe using arguments $arguments" 
         Start-Process -FilePath $cleanupCodeExePath -ArgumentList $arguments -Wait
     }
